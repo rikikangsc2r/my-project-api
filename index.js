@@ -1,12 +1,14 @@
-import express from 'express';
+const express = require('express');
+const swaggerUi = require('swagger-ui-express');
+const swaggerDocument = require('./router.json');
+const apiMain = require('./apiMain');
+
 const app = express();
 
-app.get('/', (req, res) => {
-  const name = process.env.NAME || 'World';
-  res.send(`Hello ${name}!`);
-});
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+app.use('/api/main', apiMain);
 
-const port = parseInt(process.env.PORT) || 3000;
+const port = process.env.PORT || 3000;
 app.listen(port, () => {
-  console.log(`listening on port ${port}`);
+  console.log(`Server is running on port ${port}`);
 });
