@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NirKyy API Simple</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            padding: 20px;
+        }
+        .endpoint {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+        .endpoint h3 {
+            margin-top: 0;
+        }
+        .code {
+            background-color: #f4f4f4;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>NirKyy API Simple</h1>
+    
+    <input type="text" id="searchInput" onkeyup="search()" placeholder="Search for endpoints...">
+
+    <div id="endpoints">
+        
+    </div>
+
+    <script>
+        const endpoints = [
+            {
+                "path": "/",
+                "description": "API main endpoint",
+                "method": "GET",
+                "parameters": [],
+                "example": "curl -X GET http://localhost:3000/"
+            },
+            {
+                "path": "/search",
+                "description": "Search endpoint",
+                "method": "GET",
+                "parameters": [
+                    {
+                        "name": "q",
+                        "description": "Search query"
+                    }
+                ],
+                "example": "curl -X GET http://localhost:3000/search?q=test"
+            }
+        ];
+
+        function renderEndpoints(endpointsToRender) {
+            const endpointsDiv = document.getElementById('endpoints');
+            endpointsDiv.innerHTML = '';
+            for (const endpoint of endpointsToRender) {
+                const endpointDiv = document.createElement('div');
+                endpointDiv.classList.add('endpoint');
+
+                const title = document.createElement('h3');
+                title.textContent = endpoint.path;
+                endpointDiv.appendChild(title);
+
+                const description = document.createElement('p');
+                description.textContent = endpoint.description;
+                endpointDiv.appendChild(description);
+
+                const method = document.createElement('p');
+                method.innerHTML = `<b>Method:</b> ${endpoint.method}`;
+                endpointDiv.appendChild(method);
+
+                if (endpoint.parameters.length > 0) {
+                    const parameters = document.createElement('div');
+                    parameters.innerHTML = '<b>Parameters:</b>';
+                    const ul = document.createElement('ul');
+                    for (const parameter of endpoint.parameters) {
+                        const li = document.createElement('li');
+                        li.textContent = `${parameter.name}: ${parameter.description}`;
+                        ul.appendChild(li);
+                    }
+                    parameters.appendChild(ul);
+                    endpointDiv.appendChild(parameters);
+                }
+
+                const example = document.createElement('div');
+                example.innerHTML = '<b>Example cURL:</b>';
+                const code = document.createElement('div');
+                code.classList.add('code');
+                code.textContent = endpoint.example;
+                example.appendChild(code);
+                endpointDiv.appendChild(example);
+
+                endpointsDiv.appendChild(endpointDiv);
+            }
+        }
+
+        function search() {
+            const searchInput = document.getElementById('searchInput');
+            const searchTerm = searchInput.value.toLowerCase();
+
+            const filteredEndpoints = endpoints.filter(endpoint => {
+                return endpoint.path.toLowerCase().includes(searchTerm) || 
+                       endpoint.description.toLowerCase().includes(searchTerm);
+            });
+
+            renderEndpoints(filteredEndpoints);
+        }
+
+        renderEndpoints(endpoints);
+    </script>
+</body>
+</html>
